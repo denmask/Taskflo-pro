@@ -73,50 +73,63 @@ async function renderDashboard() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Buongiorno' : hour < 18 ? 'Buon pomeriggio' : 'Buonasera';
   $('dashboard-greeting').textContent = `${greeting}, ${currentUser.name.split(' ')[0]} 👋`;
+
   const stats = await API.stats();
-  $('stats-grid').innerHTML = [
+
+  const statItems = [
     { label: 'Task totali', value: stats.total, icon: '📋' },
     { label: 'Completati', value: stats.done, icon: '✅' },
     { label: 'In corso', value: stats.inprogress, icon: '⚡' },
     { label: 'Scaduti', value: stats.overdue, icon: '⚠️', warn: stats.overdue > 0 },
     { label: 'Ore tracciate', value: (stats.totalMinutes / 60).toFixed(1) + 'h', icon: '⏱️' },
-    { label: 'Progetti attivi', value: stats.byProject.length, icon: '📁' },
-  ].map(s => `
+    { label: 'Progetti', value: stats.byProject.length, icon: '📁' },
+  ];
+
+  $('stats-grid').innerHTML = statItems.map(s => `
     <div class="stat-card${s.warn ? ' stat-warn' : ''}">
       <div class="stat-icon">${s.icon}</div>
       <div class="stat-value">${s.value}</div>
       <div class="stat-label">${s.label}</div>
     </div>
   `).join('');
+
   Charts.renderHours(stats.byDay);
   Charts.renderProjects(stats.byProject);
+
   const tasks = await API.tasks();
-  $('recent-tasks').innerHTML = tasks.slice(0, 5).map(taskRow).join('') || '<p class="empty">Nessun task ancora.</p>';
+  $('recent-tasks').innerHTML = tasks.slice(0, 6).map(taskRow).join('')
+    || '<p class="empty">Nessun task ancora. Creane uno dalla sezione Task.</p>';
 }
 
 function renderProjects() {
+  if (!allProjects.length) {
+    $('projects-grid').innerHTML = '<p class="empty">Nessun progetto. Creane uno!</p>';
+    return;
+  }
   $('projects-grid').innerHTML = allProjects.map(p => {
     const pct = p.task_count ? Math.round((p.done_count / p.task_count) * 100) : 0;
     return `
-    <div class="project-card" style="border-top: 3px solid ${p.color}">
+    <div class="project-card" style="border-top: 3px solid ${p.color || '#6366f1'}">
       <div class="project-card-header">
         <h3>${p.name}</h3>
         <div class="project-actions">
-          <button class="btn-icon" onclick="openEditProject(${p.id})">✏️</button>
-          <button class="btn-icon" onclick="deleteProject(${p.id})">🗑️</button>
+          <button class="btn-icon" onclick="event.stopPropagation();openEditProject(${p.id})" title="Modifica">✏️</button>
+          <button class="btn-icon" onclick="event.stopPropagation();deleteProject(${p.id})" title="Elimina">🗑️</button>
         </div>
       </div>
       <p class="project-desc">${p.description || 'Nessuna descrizione'}</p>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${p.color}"></div></div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${pct}%;background:${p.color || '#6366f1'}"></div>
+      </div>
       <div class="project-meta">
-        <span>${p.done_count}/${p.task_count} task</span>
+        <span>${p.done_count}/${p.task_count} task completati</span>
         ${p.deadline ? `<span>📅 ${formatDate(p.deadline)}</span>` : ''}
       </div>
-      <button class="btn-ghost small" onclick="navigateTo('tasks');setTimeout(()=>{$('filter-project').value='${p.id}';renderTasks();},100)">
+      <button class="btn-ghost small" style="align-self:flex-start" onclick="navigateTo('tasks');setTimeout(()=>{$('filter-project').value='${p.id}';renderTasks();},80)">
         Vedi task →
       </button>
     </div>`;
-  }).join('') || '<p class="empty">Nessun progetto. Creane uno!</p>';
+  }).join('');
 }
 
 async function renderTasks() {

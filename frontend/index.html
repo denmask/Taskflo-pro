@@ -4,6 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TaskFlow Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link rel="stylesheet" href="css/style.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 </head>
@@ -12,10 +14,10 @@
 <div id="auth-screen" class="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect width="36" height="36" rx="10" fill="#0f172a"/>
-        <path d="M9 18h18M18 9v18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="18" cy="18" r="5" fill="white" fill-opacity="0.3"/>
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="9" fill="#6366f1"/>
+        <path d="M10 18h16M18 10v16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="18" cy="18" r="4.5" fill="white" fill-opacity="0.25"/>
       </svg>
       <span>TaskFlow Pro</span>
     </div>
@@ -33,7 +35,7 @@
         <input type="password" id="login-password" placeholder="••••••••" required/>
       </div>
       <button type="submit" class="btn-primary full-width">Accedi</button>
-      <p class="auth-hint">Demo: usa qualsiasi email/password per registrarti</p>
+      <p class="auth-hint">Registrati con qualsiasi email e password per iniziare</p>
     </form>
     <form id="register-form" class="auth-form hidden">
       <div class="field-group">
@@ -46,7 +48,7 @@
       </div>
       <div class="field-group">
         <label>Password</label>
-        <input type="password" id="reg-password" placeholder="min. 6 caratteri" required/>
+        <input type="password" id="reg-password" placeholder="Minimo 6 caratteri" required/>
       </div>
       <button type="submit" class="btn-primary full-width">Crea account</button>
     </form>
@@ -61,10 +63,10 @@
         <span></span><span></span><span></span>
       </button>
       <div class="nav-logo">
-        <svg width="24" height="24" viewBox="0 0 36 36" fill="none">
-          <rect width="36" height="36" rx="10" fill="#0f172a"/>
-          <path d="M9 18h18M18 9v18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="18" cy="18" r="5" fill="white" fill-opacity="0.3"/>
+        <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="9" fill="#6366f1"/>
+          <path d="M10 18h16M18 10v16" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="4.5" fill="white" fill-opacity="0.25"/>
         </svg>
         <span>TaskFlow Pro</span>
       </div>
@@ -84,18 +86,20 @@
   <main class="main-content">
     <div id="page-dashboard" class="page active">
       <div class="page-header">
-        <h1 id="dashboard-greeting">Buongiorno 👋</h1>
-        <p class="page-subtitle">Ecco il riepilogo di oggi</p>
+        <div>
+          <h1 id="dashboard-greeting">Buongiorno 👋</h1>
+          <p class="page-subtitle">Ecco il riepilogo di oggi</p>
+        </div>
       </div>
       <div class="stats-grid" id="stats-grid"></div>
       <div class="charts-grid">
         <div class="chart-card">
-          <h3>Ore lavorate (ultimi 7 giorni)</h3>
-          <canvas id="chart-hours"></canvas>
+          <h3>Ore lavorate — ultimi 7 giorni</h3>
+          <canvas id="chart-hours" height="160"></canvas>
         </div>
         <div class="chart-card">
           <h3>Task per progetto</h3>
-          <canvas id="chart-projects"></canvas>
+          <canvas id="chart-projects" height="160"></canvas>
         </div>
       </div>
       <div class="recent-section">
@@ -133,37 +137,43 @@
 
     <div id="page-kanban" class="page hidden">
       <div class="page-header">
-        <h1>Kanban Board</h1>
+        <h1>Kanban</h1>
         <select id="kanban-project-filter" class="select-filter">
           <option value="">Tutti i progetti</option>
         </select>
       </div>
       <div class="kanban-board" id="kanban-board">
         <div class="kanban-col" data-status="todo">
-          <div class="kanban-col-header"><span class="col-dot todo"></span>Da fare <span class="col-count" id="count-todo">0</span></div>
+          <div class="kanban-col-header">
+            <span class="col-dot todo"></span>Da fare
+            <span class="col-count" id="count-todo">0</span>
+          </div>
           <div class="kanban-cards" id="kanban-todo"></div>
         </div>
         <div class="kanban-col" data-status="in_progress">
-          <div class="kanban-col-header"><span class="col-dot inprogress"></span>In corso <span class="col-count" id="count-in_progress">0</span></div>
+          <div class="kanban-col-header">
+            <span class="col-dot inprogress"></span>In corso
+            <span class="col-count" id="count-in_progress">0</span>
+          </div>
           <div class="kanban-cards" id="kanban-in_progress"></div>
         </div>
         <div class="kanban-col" data-status="review">
-          <div class="kanban-col-header"><span class="col-dot review"></span>In revisione <span class="col-count" id="count-review">0</span></div>
+          <div class="kanban-col-header">
+            <span class="col-dot review"></span>In revisione
+            <span class="col-count" id="count-review">0</span>
+          </div>
           <div class="kanban-cards" id="kanban-review"></div>
         </div>
         <div class="kanban-col" data-status="done">
-          <div class="kanban-col-header"><span class="col-dot done"></span>Completati <span class="col-count" id="count-done">0</span></div>
+          <div class="kanban-col-header">
+            <span class="col-dot done"></span>Completati
+            <span class="col-count" id="count-done">0</span>
+          </div>
           <div class="kanban-cards" id="kanban-done"></div>
         </div>
       </div>
     </div>
   </main>
-</div>
-
-<div id="status-bar" style="position: fixed; bottom: 0; width: 100%; background: #0f172a; color: #4ade80; font-family: monospace; font-size: 10px; padding: 4px 20px; display: flex; justify-content: space-between; border-top: 1px solid #1e293b; z-index: 999;">
-    <span>SYSTEM: ACTIVE</span>
-    <span>DATABASE: SQLITE3_CONNECTED</span>
-    <span>ENCRYPTION: AES-256-READY</span>
 </div>
 
 <div id="modal-overlay" class="modal-overlay hidden">
@@ -179,12 +189,5 @@
 <script src="js/api.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/app.js"></script>
-
-<script>
-  document.getElementById('hamburger-btn').addEventListener('click', function() {
-    document.getElementById('nav-links').classList.toggle('open');
-  });
-</script>
-
 </body>
 </html>
